@@ -8,6 +8,8 @@
 #   None
 #
 # Commands:
+#   hubot does it pass - Returns the build status of uonline
+#   hubot is it broken - Returns the build status of uonline
 #   hubot travis me <user>/<repo> - Returns the build status of https://github.com/<user>/<repo>
 #
 # URLS:
