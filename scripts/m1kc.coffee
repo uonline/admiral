@@ -7,6 +7,15 @@
 #   Uncomment the ones you want to try and experiment with.
 #
 #   These are from the scripting documentation: https://github.com/github/hubot/blob/master/docs/scripting.md
+#
+# Commands:
+#   hubot tell me your name - tell you the name
+#   hubot talk to me - show your JID as hubot sees it
+#   hubot talk to me in private - send you a direct message
+#   hubot show me your brain - inspect hubot's brain
+#
+# Author:
+#   m1kc
 
 module.exports = (robot) ->
 
@@ -20,6 +29,10 @@ module.exports = (robot) ->
   robot.respond /talk to me in private$/i, ( msg ) ->
     msg.envelope.user.type = 'direct'
     msg.send "Hey #{msg.envelope.user.name}! You told me in room #{msg.envelope.user.room} to talk to you."
+
+  robot.respond /show me your brain/i, (msg) ->
+    util = require 'util'
+    msg.reply util.inspect robot.brain.data, depth: null
 
   # robot.hear /badger/i, (msg) ->
   #   msg.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
