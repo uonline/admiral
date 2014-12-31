@@ -13,6 +13,14 @@ module.exports = (robot) ->
   robot.respond /tell me your name/i, (msg) ->
     msg.reply 'My name is Admiral Kunkka!'
 
+  robot.respond /talk to me$/i, ( msg ) ->
+    # Simply reply
+    msg.reply "Hello #{msg.envelope.user.name}. Your private JID is #{msg.envelope.user.privateChatJID}"
+
+  robot.respond /talk to me in private$/i, ( msg ) ->
+    msg.envelope.user.type = 'direct'
+    msg.send "Hey #{msg.envelope.user.name}! You told me in room #{msg.envelope.user.room} to talk to you."
+
   # robot.hear /badger/i, (msg) ->
   #   msg.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
   #
