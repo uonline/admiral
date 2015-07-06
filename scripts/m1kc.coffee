@@ -19,7 +19,10 @@
 
 module.exports = (robot) ->
 
-  robot.respond /tell me your name/i, (msg) ->
+  robot.hear //i, (msg) ->
+    console.log require('util').inspect msg.message
+
+  robot.hear /tell me your name/i, (msg) ->
     msg.reply 'My name is Admiral Kunkka!'
 
   robot.respond /talk to me$/i, ( msg ) ->
@@ -33,6 +36,13 @@ module.exports = (robot) ->
   robot.respond /show me your brain/i, (msg) ->
     util = require 'util'
     msg.reply util.inspect robot.brain.data, depth: null
+
+  robot.hear /make a test/i, (msg) ->
+    msg.reply 'Testing reply()'
+    msg.send 'Testing send()'
+
+  robot.respond /teach him manners/i, (msg) ->
+    msg.reply 'Саня, я робот вообще-то.'
 
   # robot.hear /badger/i, (msg) ->
   #   msg.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
@@ -83,12 +93,12 @@ module.exports = (robot) ->
   #   if annoyIntervalId
   #     msg.send "AAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIHHHHHHHHHH"
   #     return
-  #
+
   #   msg.send "Hey, want to hear the most annoying sound in the world?"
   #   annoyIntervalId = setInterval () ->
   #     msg.send "AAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIHHHHHHHHHH"
   #   , 1000
-  #
+
   # robot.respond /unannoy me/, (msg) ->
   #   if annoyIntervalId
   #     msg.send "GUYS, GUYS, GUYS!"

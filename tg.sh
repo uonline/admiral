@@ -1,0 +1,3 @@
+TELEGRAM_TOKEN='102038068:AAHDEEj0A2roThiSXKpFqHzREEEjIeQ5vkI' \
+TELEGRAM_INTERVAL=60000 \
+bin/hubot -a telegram -n admiral

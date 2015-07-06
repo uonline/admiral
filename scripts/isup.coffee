@@ -22,7 +22,7 @@ module.exports = (robot) ->
 isUp = (msg, domain, cb) ->
   domains = [domain]
   if domain in ['it', 'everything']
-    domains = ['playuonline.tk', 'm1kc-dev-uo.herokuapp.com']
+    domains = ['m1kc-uonline.herokuapp.com', 'm1kc-dev-uo.herokuapp.com']
   for i in domains
     msg.http("http://isitup.org/#{i}.json")
       .header('User-Agent', 'Hubot')

@@ -5,6 +5,7 @@
   "author": "m1kc (Max Musatov) <m1kc@yandex.ru>",
   "description": "A serious captain for serious people.",
   "dependencies": {
+    "cheerio": "0.10.5",
     "hubot": "^2.11.0",
     "hubot-diagnostics": "0.0.1",
     "hubot-google-images": "^0.1.2",
@@ -17,9 +18,9 @@
     "hubot-rules": "^0.1.0",
     "hubot-scripts": "^2.5.16",
     "hubot-shipit": "^0.1.1",
+    "hubot-telegram": "0.0.2",
     "hubot-xmpp": "^0.1.12",
-    "hubot-youtube": "^0.1.2",
-    "cheerio": "0.10.5"
+    "hubot-youtube": "^0.1.2"
   },
   "engines": {
     "node": "0.10.x"
