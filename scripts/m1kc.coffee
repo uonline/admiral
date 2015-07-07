@@ -65,6 +65,30 @@ reboot
 startx
 """
 
+  robot.respond /deploy (\S+) to dev/i, (msg) ->
+    ref = msg.match[1]
+    msg.reply "Okay, deploying #{ref} to dev.\nChecking CI status for #{ref}..."
+    GitHubApi = require 'github'
+    github = new GitHubApi {
+      version: '3.0.0'
+    }
+    github.statuses.getCombined {
+      user: 'uonline'
+      repo: 'uonline'
+      sha: ref
+    }, (error, result) ->
+      if error?
+        msg.reply "GitHub API error:\n#{error}"
+      else
+        if result.state is 'success'
+          msg.reply "CI is fine (#{result.statuses.length} checks), starting deploy.\nLol, sorry, not implemented."
+        else
+          ci = "CI is not fine, interrupting.\nOverall status: #{result.state}"
+          details = ""
+          for i in result.statuses
+            details += "\n[#{i.state}] #{i.context}: #{i.description}"
+          msg.reply "#{ci}#{details}"
+
   # robot.hear /badger/i, (msg) ->
   #   msg.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
   #
