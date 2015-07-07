@@ -45,9 +45,12 @@ class Telegram extends Adapter
 
     # Only if it's a text message, not join or leaving events
     if text
-      # If is a direct message to the bot, prepend the name
-      #text = @robot.name + ' ' + msg.message.text if msg.message.chat.id > 0
-      text = msg.message.text.slice(1)
+      # Strip any commands and mentions
+      if text[0] is '/' or text[0] is '@'
+        text = text.slice(text.indexOf(' ')+1)
+      ## If is a direct message to the bot, prepend the name
+      ##text = @robot.name + ' ' + msg.message.text if msg.message.chat.id > 0
+      text = @robot.name + ' ' + text
       message = new TextMessage user, text, msg.message_id
       @receive message
       @offset = msg.update_id

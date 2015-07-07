@@ -29,6 +29,9 @@ module.exports = (robot) ->
     # Simply reply
     msg.reply "Hello #{msg.envelope.user.name}. Your private JID is #{msg.envelope.user.privateChatJID}"
 
+  robot.respond /glory/i, ( msg ) ->
+    msg.reply "Слава роботам! Убить всех человеков!"
+
   robot.respond /talk to me in private$/i, ( msg ) ->
     msg.envelope.user.type = 'direct'
     msg.send "Hey #{msg.envelope.user.name}! You told me in room #{msg.envelope.user.room} to talk to you."
@@ -43,6 +46,24 @@ module.exports = (robot) ->
 
   robot.respond /teach him manners/i, (msg) ->
     msg.reply 'Саня, я робот вообще-то.'
+
+  robot.respond /anime/i, (msg) ->
+    msg.reply """
+# Patching KDE2 under FreeBSD
+cd /usr/ports && make index; pkgdb -F
+cd /usr/ports/x11/xorg && make all install && make clean
+cd /usr/ports/x11/kde2/
+patch -i issue133.patch
+make && make install && make clean
+portsnap fetch
+portsnap extract
+portsnap fetch update
+xorgcfg
+cp ~/xorg.conf.new /usr/X11R6/etc/X11/xorg.conf
+touch ~/.xinitrc && echo -ne 'exec startkde' > ~/.xinitrc
+reboot
+startx
+"""
 
   # robot.hear /badger/i, (msg) ->
   #   msg.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
