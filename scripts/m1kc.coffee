@@ -65,6 +65,38 @@ reboot
 startx
 """
 
+  robot.respond /(ci|travis) status (for|of) (\S+)/i, (msg) ->
+    ref = msg.match[3]
+    GitHubApi = require 'github'
+    github = new GitHubApi {
+      version: '3.0.0'
+    }
+    github.statuses.getCombined {
+      user: 'uonline'
+      repo: 'uonline'
+      sha: ref
+    }, (error, result) ->
+      if error?
+        cson = require 'cson'
+        #msg.reply "GitHub API error:\n#{cson.createCSONString(error)}"
+        #console.log require('util').inspect error
+        if error.message?
+          error.message = JSON.parse(error.message)
+        msg.reply "⚠️ GitHub API error:\n#{cson.createCSONString(error)}"
+      else
+        superstate = (state) ->
+          switch state
+            when 'success' then '✅ success'
+            when 'pending' then '🕑 pending'
+            when 'failure' then '❌ failure'
+            else state
+        result.state = superstate(result.state)
+        ci = "CI status for #{ref}: #{result.state}"
+        details = ""
+        for i in result.statuses
+          details += "\n[#{superstate(i.state)}] #{i.context}: #{i.description}"
+        msg.reply "#{ci}#{details}"
+
   robot.respond /deploy (\S+) to dev/i, (msg) ->
     ref = msg.match[1]
     msg.reply "Okay, deploying #{ref} to dev.\nChecking CI status for #{ref}..."
