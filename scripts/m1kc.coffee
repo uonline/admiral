@@ -44,9 +44,6 @@ module.exports = (robot) ->
     msg.reply 'Testing reply()'
     msg.send 'Testing send()'
 
-  robot.respond /teach him manners/i, (msg) ->
-    msg.reply 'Саня, я робот вообще-то.'
-
   robot.respond /anime/i, (msg) ->
     msg.reply """
 # Patching KDE2 under FreeBSD
@@ -120,6 +117,38 @@ startx
           for i in result.statuses
             details += "\n[#{i.state}] #{i.context}: #{i.description}"
           msg.reply "#{ci}#{details}"
+
+  robot.respond /listen/i, (msg) ->
+    console.log "==> #{msg.message.text}"
+    msg.reply "I got you, captain!"
+
+  robot.respond /spam to this room/i, (msg) ->
+    console.log require('util').inspect msg, depth: null
+    robot.brain.set 'github-room', msg.message.room
+    q = robot.brain.get 'github-room'
+    msg.reply "Spamming to room #{q}."
+
+  robot.router.post '/hubot/github', (req, res) ->
+    COMPLEMENT = true
+    # dump
+    console.log require('util').inspect req.body, depth: null
+    console.log require('util').inspect req.headers, depth: null
+    event = req.headers['x-github-event']
+    data = req.body
+    res.send 'OK'
+    # send
+    room = robot.brain.get 'github-room'
+    switch event
+      when 'ping'
+        robot.messageRoom room, "⚡️ Got ping from GitHub. Yarrrrrrr!"
+      when 'issues'
+        if COMPLEMENT is true
+          if data.action != 'closed' then return
+        robot.messageRoom room, "🐛 @#{data.issue.user.login} #{data.action} an issue at #{data.repository.full_name}\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
+      when 'push'
+        robot.messageRoom room, "#⃣ push to #{data.ref} at #{data.repository.full_name}, #{data.commits.length} commit(s)\n\nCompare: #{data.compare}"
+      else
+        robot.messageRoom room, "Got some unknown event from github: #{event}"
 
   # robot.hear /badger/i, (msg) ->
   #   msg.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
