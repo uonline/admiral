@@ -35,7 +35,7 @@ module.exports = (robot) ->
       .get() (err, res, body) ->
         langs = JSON.parse(body)
         callback(langs)
-        robot.logger.info "Brain received eval language list #{util.inspect(langs)}"
+        robot.logger.info "Brain received eval language list #{Object.keys(langs)}"
 
   lang_valid = (robot, lang, callback) ->
     callback or= () ->

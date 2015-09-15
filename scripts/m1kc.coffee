@@ -145,6 +145,9 @@ startx
         if COMPLEMENT is true
           if data.action != 'closed' then return
         robot.messageRoom room, "🐛 @#{data.issue.user.login} #{data.action} an issue at #{data.repository.full_name}\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
+      when 'issue_comment'
+        # do nothing
+        if true is false then console.log 'wow'
       when 'push'
         robot.messageRoom room, "#⃣ push to #{data.ref} at #{data.repository.full_name}, #{data.commits.length} commit(s)\n\nCompare: #{data.compare}"
       else
