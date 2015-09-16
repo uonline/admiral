@@ -131,8 +131,8 @@ startx
   robot.router.post '/hubot/github', (req, res) ->
     COMPLEMENT = false
     # dump
-    console.log require('chalk').green require('util').inspect req.body, depth: null
-    console.log require('chalk').green require('util').inspect req.headers, depth: null
+    #console.log require('chalk').green require('util').inspect req.body, depth: null
+    #console.log require('chalk').green require('util').inspect req.headers, depth: null
     event = req.headers['x-github-event']
     data = req.body
     res.send 'OK'
@@ -141,6 +141,8 @@ startx
     switch event
       when 'ping'
         robot.messageRoom room, "⚡️ Got ping from GitHub. Yarrrrrrr!"
+      when 'commit_comment'
+        robot.messageRoom room, "💬 @#{data.comment.user.login} commented on #{data.comment.commit_id.substr(0,6)} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'issues'
         if COMPLEMENT is true
           if data.action != 'closed' then return
@@ -186,7 +188,7 @@ startx
         # repository.owner ? sender ? ?!?!
         robot.messageRoom room, "New repository #{data.repository.full_name}"
       when 'status'
-        robot.messageRoom room, "Commit #{data.sha} changed status to '#{data.state}' at #{data.repository.full_name}\n\n#{data.commit.html_url}"
+        robot.messageRoom room, "Commit #{data.sha.substr(0,6)} changed status to '#{data.state}' at #{data.repository.full_name}\n\n#{data.commit.html_url}"
       when 'team_add'
         robot.messageRoom room, "#{data.repository.full_name} has been added to '#{data.team.name}' team"
       when 'watch'
