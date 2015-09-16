@@ -82,14 +82,19 @@ class Telegram extends Adapter
           @robot.logger.info "WebHook"
           @receiveMsg msg
     else
-      setInterval ->
-        url = "#{self.api_url}/getUpdates?offset=#{self.getLastOffset()}"
+      longPoll = ->
+        url = "#{self.api_url}/getUpdates?offset=#{self.getLastOffset()}&timeout=60"
         self.robot.http(url).get() (err, res, body) ->
-          self.emit 'error', new Error err if err
-          updates = JSON.parse body
-          for msg in updates.result
-            self.receiveMsg msg
-      , 2000
+          longPoll()
+          if err
+            it_is_timeout = err.description is 'Error: Conflict: terminated by other long poll or webhook'
+            unless it_is_timeout
+              self.emit 'error', new Error err
+          else
+            updates = JSON.parse body
+            for msg in updates.result
+              self.receiveMsg msg
+      longPoll()
 
     @emit "connected"
 
