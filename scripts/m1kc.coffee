@@ -20,7 +20,7 @@
 module.exports = (robot) ->
 
   robot.hear //i, (msg) ->
-    console.log require('util').inspect msg.message
+    console.log require('chalk').blue require('util').inspect msg.message
 
   robot.hear /tell me your name/i, (msg) ->
     msg.reply 'My name is Admiral Kunkka!'
@@ -131,8 +131,8 @@ startx
   robot.router.post '/hubot/github', (req, res) ->
     COMPLEMENT = true
     # dump
-    console.log require('util').inspect req.body, depth: null
-    console.log require('util').inspect req.headers, depth: null
+    console.log require('chalk').green require('util').inspect req.body, depth: null
+    console.log require('chalk').green require('util').inspect req.headers, depth: null
     event = req.headers['x-github-event']
     data = req.body
     res.send 'OK'

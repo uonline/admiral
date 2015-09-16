@@ -5,6 +5,7 @@
   "author": "m1kc (Max Musatov) <m1kc@yandex.ru>",
   "description": "A serious captain for serious people.",
   "dependencies": {
+    "chalk": "^1.1.1",
     "cheerio": "0.10.5",
     "cson": "^3.0.1",
     "github": "^0.2.4",
