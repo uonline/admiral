@@ -19,7 +19,7 @@
 
 module.exports = (robot) ->
 
-  robot.hear //i, (msg) ->
+  robot.hear /.*/i, (msg) ->
     console.log require('util').inspect msg.message
 
   robot.hear /tell me your name/i, (msg) ->
@@ -129,10 +129,10 @@ startx
     msg.reply "Spamming to room #{q}."
 
   robot.router.post '/hubot/github', (req, res) ->
-    COMPLEMENT = true
+    COMPLEMENT = false
     # dump
-    console.log require('util').inspect req.body, depth: null
-    console.log require('util').inspect req.headers, depth: null
+    #console.log require('util').inspect req.body, depth: null
+    #console.log require('util').inspect req.headers, depth: null
     event = req.headers['x-github-event']
     data = req.body
     res.send 'OK'
@@ -148,8 +148,50 @@ startx
       when 'issue_comment'
         # do nothing
         if true is false then console.log 'wow'
+      #when 'download'
+      #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
+      #when 'follow'
+      #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
+      when 'fork'
+        robot.messageRoom room, "@#{data.sender.login} forked #{data.repository.full_name} to #{data.forkee.full_name}"
+      #when 'fork_apply'
+      #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
+      #when 'fork_apply'
+      #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
+      when 'gollum'
+        robot.messageRoom room, "@#{data.sender.login} " + data.pages.map((p) -> "#{p.action} '#{p.page_name}' wiki page (#{p.html_url})").join(", ") + " at "+data.repository.full_name
+      when 'member'
+        # data.action - Currently, can only be "added"
+        robot.messageRoom room, "@#{data.member.login} has been added to #{data.repository.full_name}"
+      when 'membership'
+        action_at = data.action + {added:' to', removed:' from'}[data.action]
+        robot.messageRoom room, "@#{data.member.login} has been #{action_at} team #{data.team.name}"
+      when 'page_build'
+        # data.build.pusher VS data.sender ?
+        robot.messageRoom room, "@#{data.build.pusher.login} building page #{data.build.url} at #{data.repository.full_name}, status: #{data.build.status}\n\n#{data.repository.html_url}"
+      when 'public'
+        # Triggered when a private repository is open sourced. Without a doubt: the best GitHub event.
+        robot.messageRoom room, "#{data.repository.full_name} has become public! Hooray!\n\n#{data.repository.html_url}"
+      when 'pull_request'
+        robot.messageRoom room, "@#{data.pull_request.user.login} #{data.action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
+      when 'pull_request_review_comment'
+        robot.messageRoom room, "@#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'push'
         robot.messageRoom room, "#⃣ push to #{data.ref} at #{data.repository.full_name}, #{data.commits.length} commit(s)\n\nCompare: #{data.compare}"
+      when 'release'
+        # data.action - Currently, can only be "published"
+        robot.messageRoom room, "@#{data.release.author.login} published new release #{data.release.tag_name} at #{data.repository.full_name}"
+      when 'repository'
+        # data.action - Currently, can only be "created"
+        # repository.owner ? sender ? ?!?!
+        robot.messageRoom room, "New repository #{data.repository.full_name}"
+      when 'status'
+        robot.messageRoom room, "Commit #{data.sha} changed status to '#{data.state}' at #{data.repository.full_name}\n\n#{data.commit.html_url}"
+      when 'team_add'
+        robot.messageRoom room, "#{data.repository.full_name} has been added to '#{data.team.name}' team"
+      when 'watch'
+        # data.action Currently, can only be started.
+        robot.messageRoom room, "@#{data.sender.login} starred #{data.repository.full_name}"
       else
         robot.messageRoom room, "Got some unknown event from github: #{event}"
 
