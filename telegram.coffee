@@ -23,6 +23,7 @@ class Telegram extends Adapter
       form:
         chat_id: envelope.room
         text: strings.join()
+        disable_web_page_preview: true
 
     request.post data, (err, res, body) =>
       @robot.logger.info res.statusCode
