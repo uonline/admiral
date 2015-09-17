@@ -11,22 +11,31 @@ yellow = chalk.yellow
 ghHandler = null
 
 robot =
-	router: { post: (url,func) -> ghHandler = func }
-	logger: { info: -> }
+	router:
+		post: (url, func) ->
+			ghHandler = func
+	logger:
+		info: ->
 	hear: ->
-	respond: -> ,
-	brain: { get: -> 'test_room_#1' },
-	messageRoom: (r,m) -> console.log(magenta('room:')+" #{r}\n"+magenta('message:')+"\n#{m}")
+	respond: ->
+	brain:
+		get: ->
+			'wassup_jedi'
+	messageRoom: (rm, msg) ->
+		console.log "#{magenta 'room:'} #{rm}"
+		console.log magenta 'message:'
+		console.log msg
 
 ghScript(robot)
 
 test = (eventName, data) ->
-	console.log green(">>>")+yellow(" #{eventName} ")+green(Array(60-1-eventName.length).join('-'))
+	console.log "#{green '>>>'} #{yellow eventName} #{green Array(60-1-name.length).join '-'}"
 	ghHandler(
-		{ headers:{'x-github-event':eventName}, body:data }
-		{ send: (text) -> console.log(magenta('response: ')+text) }
+		{ headers: { 'x-github-event': eventName }, body: data }
+		{ send: (text) -> console.log "#{magenta 'response:'} #{text}" }
 	)
-	console.log green '>>> '+Array(60).join('-')+'\n'
+	console.log green ">>> #{Array(60).join '-'}"
+	console.log ''
 
 httptest = ->
 	t = files.pop()
@@ -38,9 +47,8 @@ httptest = ->
 	options =
 		method: 'POST'
 		uri: 'http://localhost:3217/hubot/github'
-		headers: {
+		headers:
 			'x-github-event': name
-		}
 	fs.createReadStream(t).pipe request.post options, (error, response, body) ->
 		if error?
 			console.log error
@@ -50,7 +58,7 @@ httptest = ->
 			return
 		httptest()
 
-USE_HTTP = true
+USE_HTTP = false
 
 files = fs.readdirSync(__dirname).filter (name) -> name.match /\.json$/
 if USE_HTTP
