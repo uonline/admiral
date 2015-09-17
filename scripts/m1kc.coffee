@@ -154,13 +154,6 @@ startx
       when 'deployment_status'
         # data.deployment_status.creator VS data.deployment.creator ?
         robot.messageRoom room, "@#{data.deployment_status.creator.login} deployed #{data.deployment.sha.substr(0,6)} to #{data.deployment.ref} at #{data.repository.full_name}, status: #{data.deployment_status.state}"
-      when 'issues'
-        if COMPLEMENT is true
-          if data.action != 'closed' then return
-        robot.messageRoom room, "🐛 @#{data.issue.user.login} #{data.action} an issue at #{data.repository.full_name}\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
-      when 'issue_comment'
-        # data.action - Currently, can only be "created".
-        robot.messageRoom room, "@#{data.comment.user.login} commented on issue ##{data.issue.number} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       #when 'download'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       #when 'follow'
@@ -173,6 +166,13 @@ startx
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       when 'gollum'
         robot.messageRoom room, "📖 @#{data.sender.login} " + data.pages.map((p) -> "#{p.action} '#{p.page_name}' wiki page (#{p.html_url})").join(", ") + " at "+data.repository.full_name
+      when 'issue_comment'
+        # data.action - Currently, can only be "created".
+        robot.messageRoom room, "@#{data.comment.user.login} commented on issue ##{data.issue.number} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
+      when 'issues'
+        if COMPLEMENT is true
+          if data.action != 'closed' then return
+        robot.messageRoom room, "🐛 @#{data.issue.user.login} #{data.action} an issue at #{data.repository.full_name}\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
       when 'member'
         # data.action - Currently, can only be "added"
         robot.messageRoom room, "@#{data.member.login} has been added to #{data.repository.full_name}"
