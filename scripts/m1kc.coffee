@@ -143,13 +143,24 @@ startx
         robot.messageRoom room, "⚡️ Got ping from GitHub. Yarrrrrrr!"
       when 'commit_comment'
         robot.messageRoom room, "💬 @#{data.comment.user.login} commented on #{data.comment.commit_id.substr(0,6)} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
+      when 'create'
+        # ref - The git ref (or null if only a repository was created).
+        ref = if data.ref? then "'#{data.ref}' at #{data.repository.full_name}" else "'#{data.repository.full_name}'"
+        robot.messageRoom room, "@#{data.sender.login} created #{data.ref_type} #{ref}"
+      when 'delete'
+        robot.messageRoom room, "@#{data.sender.login} deleted #{data.ref_type} '#{data.ref}' at #{data.repository.full_name}"
+      when 'deployment'
+        robot.messageRoom room, "@#{data.deployment.creator.login} created a deployment #{data.deployment.sha.substr(0,6)} at #{data.repository.full_name}"
+      when 'deployment_status'
+        # data.deployment_status.creator VS data.deployment.creator ?
+        robot.messageRoom room, "@#{data.deployment_status.creator.login} deployed #{data.deployment.sha.substr(0,6)} to #{data.deployment.ref} at #{data.repository.full_name}, status: #{data.deployment_status.state}"
       when 'issues'
         if COMPLEMENT is true
           if data.action != 'closed' then return
         robot.messageRoom room, "🐛 @#{data.issue.user.login} #{data.action} an issue at #{data.repository.full_name}\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
       when 'issue_comment'
-        # do nothing
-        if true is false then console.log 'wow'
+        # data.action - Currently, can only be "created".
+        robot.messageRoom room, "@#{data.comment.user.login} commented on issue ##{data.issue.number} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       #when 'download'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       #when 'follow'
