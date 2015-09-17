@@ -1,6 +1,7 @@
 #!/usr/local/bin/coffee
 fs = require 'fs'
 chalk = require 'chalk'
+request = require 'request'
 ghScript = require '../scripts/m1kc.coffee'
 
 green = chalk.green
@@ -27,8 +28,36 @@ test = (eventName, data) ->
 	)
 	console.log green '>>> '+Array(60).join('-')+'\n'
 
+httptest = ->
+	t = files.pop()
+	if not t?
+		return
+	name = t.match(/^(.*)\.json$/)[1]
+	t = "#{__dirname}/#{t}"
+	console.log "#{green '>>>'} #{yellow name} #{green Array(60-1-name.length).join '-'}"
+	options =
+		method: 'POST'
+		uri: 'http://localhost:3217/hubot/github'
+		headers: {
+			'x-github-event': name
+		}
+	fs.createReadStream(t).pipe request.post options, (error, response, body) ->
+		if error?
+			console.log error
+			return
+		if response.statusCode != 200
+			console.log "Status code is #{response.statusCode}, expected 200"
+			return
+		httptest()
+
+USE_HTTP = true
+
 files = fs.readdirSync(__dirname).filter (name) -> name.match /\.json$/
-for file in files
-	data = JSON.parse(fs.readFileSync(__dirname+'/'+file))
-	name = file.match(/^(.*)\.json$/)[1]
-	test(name, data)
+if USE_HTTP
+	files = files.reverse()
+	httptest()
+else
+	for file in files
+		data = JSON.parse(fs.readFileSync(__dirname+'/'+file))
+		name = file.match(/^(.*)\.json$/)[1]
+		test(name, data)

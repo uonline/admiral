@@ -155,13 +155,13 @@ startx
       #when 'follow'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       when 'fork'
-        robot.messageRoom room, "@#{data.sender.login} forked #{data.repository.full_name} to #{data.forkee.full_name}"
+        robot.messageRoom room, "🐗 @#{data.sender.login} forked #{data.repository.full_name} to #{data.forkee.full_name}"
       #when 'fork_apply'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       #when 'fork_apply'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       when 'gollum'
-        robot.messageRoom room, "@#{data.sender.login} " + data.pages.map((p) -> "#{p.action} '#{p.page_name}' wiki page (#{p.html_url})").join(", ") + " at "+data.repository.full_name
+        robot.messageRoom room, "📖 @#{data.sender.login} " + data.pages.map((p) -> "#{p.action} '#{p.page_name}' wiki page (#{p.html_url})").join(", ") + " at "+data.repository.full_name
       when 'member'
         # data.action - Currently, can only be "added"
         robot.messageRoom room, "@#{data.member.login} has been added to #{data.repository.full_name}"
@@ -186,7 +186,7 @@ startx
       when 'repository'
         # data.action - Currently, can only be "created"
         # repository.owner ? sender ? ?!?!
-        robot.messageRoom room, "New repository #{data.repository.full_name}"
+        robot.messageRoom room, "📔 New repository #{data.repository.full_name}"
       when 'status'
         robot.messageRoom room, "Commit #{data.sha.substr(0,6)} changed status to '#{data.state}' at #{data.repository.full_name}\n\n#{data.commit.html_url}"
       when 'team_add'

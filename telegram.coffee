@@ -93,6 +93,7 @@ class Telegram extends Adapter
               self.emit 'error', new Error err
           else
             updates = JSON.parse body
+            #console.log(updates)
             for msg in updates.result
               self.receiveMsg msg
       longPoll()
