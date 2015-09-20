@@ -17,7 +17,23 @@
 # Author:
 #   m1kc
 
+request = require 'request'
+
+
 module.exports = (robot) ->
+
+  getCommitMessage = (repository, sha, callback) ->
+    opts =
+      url: repository.commits_url.replace('{/sha}', '/'+sha)
+      headers:
+        'User-Agent': 'admiral/1.0'
+    request opts, (err, res, body) ->
+      message = null
+      if err?
+        console.log("Error while requesting #{opts.url}: #{err.message}")
+      else
+        message = JSON.parse(body).commit.message
+      callback(message or sha.substr(0,7))
 
   robot.hear /.*/i, (msg) ->
     console.log require('chalk').blue require('util').inspect msg.message
@@ -150,18 +166,20 @@ startx
       when 'delete'
         robot.messageRoom room, "@#{data.sender.login} deleted #{data.ref_type} '#{data.ref}' at #{data.repository.full_name}"
       when 'deployment'
-        robot.messageRoom room, "🐇 @#{data.deployment.creator.login} is deploying #{data.deployment.sha.substr(0,7)} from #{data.repository.full_name} to #{data.deployment.environment}"
+        getCommitMessage data.repository, data.deployment.sha, (message) ->
+          robot.messageRoom room, "🐇 @#{data.deployment.creator.login} is deploying '#{message}' from #{data.repository.full_name} to #{data.deployment.environment}"
       when 'deployment_status'
         # data.deployment_status.creator VS data.deployment.creator ?
-        switch data.deployment_status.state
-          #when 'pending'
-          when 'success'
-            msg = "🐇 @#{data.deployment_status.creator.login} successfully deployed #{data.deployment.sha.substr(0,7)} from #{data.repository.full_name} to #{data.deployment.environment}"
-          when 'failure', 'error'
-            msg = "❌ Deploying #{data.deployment.sha.substr(0,7)} from #{data.repository.full_name} to #{data.deployment.environment} failed.\nDetails: #{data.deployment_status.target_url or 'AAAAA!'}"
-          else
-            return
-        robot.messageRoom room, msg
+        getCommitMessage data.repository, data.deployment.sha, (message) ->
+          switch data.deployment_status.state
+            #when 'pending'
+            when 'success'
+              msg = "🐇 @#{data.deployment_status.creator.login} successfully deployed '#{message}' from #{data.repository.full_name} to #{data.deployment.environment}"
+            when 'failure', 'error'
+              msg = "❌ Deploying '#{message}' from #{data.repository.full_name} to #{data.deployment.environment} failed.\nDetails: #{data.deployment_status.target_url or 'AAAAA!'}"
+            else
+              return
+          robot.messageRoom room, msg
       #when 'download'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       #when 'follow'
@@ -209,7 +227,8 @@ startx
         # repository.owner ? sender ? ?!?!
         robot.messageRoom room, "📔 New repository #{data.repository.full_name}"
       when 'status'
-        robot.messageRoom room, "Commit #{data.sha.substr(0,7)} changed status to '#{data.state}' at #{data.repository.full_name}\n\n#{data.commit.html_url}"
+        if data.state in ['failure', 'error']
+          robot.messageRoom room, "'#{data.commit.commit.message or data.sha.substr(0,7)}' at #{data.repository.full_name}: #{data.description or data.state} (#{data.context})\nDetails: #{data.target_url or 'not available'}"
       when 'team_add'
         robot.messageRoom room, "#{data.repository.full_name} has been added to '#{data.team.name}' team"
       when 'watch'

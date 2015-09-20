@@ -10,32 +10,40 @@ yellow = chalk.yellow
 
 ghHandler = null
 
-robot =
-	router:
-		post: (url, func) ->
-			ghHandler = func
-	logger:
-		info: ->
-	hear: ->
-	respond: ->
-	brain:
-		get: ->
-			'wassup_jedi'
-	messageRoom: (rm, msg) ->
-		console.log "#{magenta 'room:'} #{rm}"
-		console.log magenta 'message:'
-		console.log msg
+makeRobot = (onMessage) ->
+	robot =
+		router:
+			post: (url, func) ->
+				ghHandler = func
+		logger:
+			info: ->
+		hear: ->
+		respond: ->
+		brain:
+			get: ->
+				'wassup_jedi'
+		messageRoom: onMessage
+	return robot
 
-ghScript(robot)
+
 
 test = (eventName, data) ->
-	console.log "#{green '>>>'} #{yellow eventName} #{green Array(60-1-name.length).join '-'}"
+	response_text = 'not assigned'
+	robot = makeRobot (room, msg) ->
+		console.log "#{green '>>>'} #{yellow eventName} #{green Array(60-1-name.length).join '-'}"
+		console.log "#{magenta 'response:'} #{response_text}"
+		console.log "#{magenta 'room:'} #{room}"
+		console.log magenta 'message:'
+		console.log msg
+		console.log green ">>> #{Array(60).join '-'}"
+		console.log ''
+	
+	ghScript(robot)
+	
 	ghHandler(
 		{ headers: { 'x-github-event': eventName }, body: data }
-		{ send: (text) -> console.log "#{magenta 'response:'} #{text}" }
+		{ send: (text) -> response_text = text }
 	)
-	console.log green ">>> #{Array(60).join '-'}"
-	console.log ''
 
 httptest = ->
 	t = files.pop()
