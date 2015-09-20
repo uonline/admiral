@@ -86,7 +86,7 @@ class Telegram extends Adapter
       longPoll = ->
         url = "#{self.api_url}/getUpdates?offset=#{self.getLastOffset()}&timeout=60"
         self.robot.http(url).get() (err, res, body) ->
-          longPoll()
+          process.nextTick -> longPoll()
           if err
             it_is_timeout = err.description is 'Error: Conflict: terminated by other long poll or webhook'
             unless it_is_timeout
