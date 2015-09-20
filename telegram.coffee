@@ -92,8 +92,14 @@ class Telegram extends Adapter
             unless it_is_timeout
               self.emit 'error', new Error err
           else
-            updates = JSON.parse body
-            #console.log(updates)
+            try
+              updates = JSON.parse body
+            catch ex
+              console.log("#{ex.message}\nWhile parsing:\n#{body}")
+              return
+            unless updates.ok
+              console.log("#{updates.description} (#{updates.error_code})")
+              return
             for msg in updates.result
               self.receiveMsg msg
       longPoll()
