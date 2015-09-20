@@ -142,7 +142,7 @@ startx
       when 'ping'
         robot.messageRoom room, "⚡️ Got ping from GitHub. Yarrrrrrr!"
       when 'commit_comment'
-        robot.messageRoom room, "💬 @#{data.comment.user.login} commented on #{data.comment.commit_id.substr(0,6)} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
+        robot.messageRoom room, "💬 @#{data.comment.user.login} commented on #{data.comment.commit_id.substr(0,7)} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'create'
         # ref - The git ref (or null if only a repository was created).
         ref = if data.ref? then "'#{data.ref}' at #{data.repository.full_name}" else "'#{data.repository.full_name}'"
@@ -150,10 +150,18 @@ startx
       when 'delete'
         robot.messageRoom room, "@#{data.sender.login} deleted #{data.ref_type} '#{data.ref}' at #{data.repository.full_name}"
       when 'deployment'
-        robot.messageRoom room, "@#{data.deployment.creator.login} created a deployment #{data.deployment.sha.substr(0,6)} at #{data.repository.full_name}"
+        robot.messageRoom room, "🐇 @#{data.deployment.creator.login} is deploying #{data.deployment.sha.substr(0,7)} from #{data.repository.full_name} to #{data.deployment.environment}"
       when 'deployment_status'
         # data.deployment_status.creator VS data.deployment.creator ?
-        robot.messageRoom room, "@#{data.deployment_status.creator.login} deployed #{data.deployment.sha.substr(0,6)} to #{data.deployment.ref} at #{data.repository.full_name}, status: #{data.deployment_status.state}"
+        switch data.deployment_status.state
+          #when 'pending'
+          when 'success'
+            msg = "🐇 @#{data.deployment_status.creator.login} successfully deployed #{data.deployment.sha.substr(0,7)} from #{data.repository.full_name} to #{data.deployment.environment}"
+          when 'failure', 'error'
+            msg = "❌ Deploying #{data.deployment.sha.substr(0,7)} from #{data.repository.full_name} to #{data.deployment.environment} failed.\nDetails: #{data.deployment_status.target_url or 'AAAAA!'}"
+          else
+            return
+        robot.messageRoom room, msg
       #when 'download'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       #when 'follow'
@@ -186,6 +194,8 @@ startx
         # Triggered when a private repository is open sourced. Without a doubt: the best GitHub event.
         robot.messageRoom room, "#{data.repository.full_name} has become public! Hooray!\n\n#{data.repository.html_url}"
       when 'pull_request'
+        if data.action in ['labeled', 'unlabeled']
+          return
         robot.messageRoom room, "@#{data.pull_request.user.login} #{data.action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
       when 'pull_request_review_comment'
         robot.messageRoom room, "@#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
@@ -199,7 +209,7 @@ startx
         # repository.owner ? sender ? ?!?!
         robot.messageRoom room, "📔 New repository #{data.repository.full_name}"
       when 'status'
-        robot.messageRoom room, "Commit #{data.sha.substr(0,6)} changed status to '#{data.state}' at #{data.repository.full_name}\n\n#{data.commit.html_url}"
+        robot.messageRoom room, "Commit #{data.sha.substr(0,7)} changed status to '#{data.state}' at #{data.repository.full_name}\n\n#{data.commit.html_url}"
       when 'team_add'
         robot.messageRoom room, "#{data.repository.full_name} has been added to '#{data.team.name}' team"
       when 'watch'
