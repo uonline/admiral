@@ -27,14 +27,22 @@ module.exports = (robot) ->
     id = msg.match[1]
     statusIssue msg, id
 
+
+printIssues = (issues) ->
+  issues.map((x) -> "* #{x.title}: #{x.full_url}").join "\n"
+
+highlight = (status) ->
+  if status is 'green' then status else status.toUpperCase()
+
 status = (msg) ->
   msg.http("https://status.heroku.com/api/v3/current-status")
     .get() (err, res, body) ->
       try
         json = JSON.parse(body)
         msg.send "Heroku status:\n" +
-                 "Production:  #{json['status']['Production']}\n" +
-                 "Development: #{json['status']['Development']}"
+                 "Production:  #{highlight json['status']['Production']}\n" +
+                 "Development: #{highlight json['status']['Development']}\n" +
+                 "#{printIssues(json.issues)}"
       catch error
         msg.send "Uh oh, I had trouble figuring out what the Heroku cloud is up to."
 
