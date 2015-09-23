@@ -20,6 +20,14 @@
 request = require 'request'
 
 
+Object.defineProperty String.prototype, 'firstLine',
+  get: ->
+    i = this.indexOf('\n')
+    if i == -1
+      return this
+    return this.substr(0, i)
+
+
 module.exports = (robot) ->
 
   pluralize = (n, form1, form2) ->
@@ -173,16 +181,16 @@ startx
         robot.messageRoom room, "@#{data.sender.login} deleted #{data.ref_type} '#{data.ref}' at #{data.repository.full_name}"
       when 'deployment'
         getCommitMessage data.repository, data.deployment.sha, (message) ->
-          robot.messageRoom room, "🐇 @#{data.deployment.creator.login} is deploying '#{message}' from #{data.repository.full_name} to #{data.deployment.environment}"
+          robot.messageRoom room, "🐇 @#{data.deployment.creator.login} is deploying '#{message.firstLine}' from #{data.repository.full_name} to #{data.deployment.environment}"
       when 'deployment_status'
         # data.deployment_status.creator VS data.deployment.creator ?
         getCommitMessage data.repository, data.deployment.sha, (message) ->
           switch data.deployment_status.state
             #when 'pending'
             when 'success'
-              msg = "🐇 @#{data.deployment_status.creator.login} successfully deployed '#{message}' from #{data.repository.full_name} to #{data.deployment.environment}"
+              msg = "🐇 @#{data.deployment_status.creator.login} successfully deployed '#{message.firstLine}' from #{data.repository.full_name} to #{data.deployment.environment}"
             when 'failure', 'error'
-              msg = "❌ Deploying '#{message}' from #{data.repository.full_name} to #{data.deployment.environment} failed.\nDetails: #{data.deployment_status.target_url or 'AAAAA!'}"
+              msg = "❌ Deploying '#{message.firstLine}' from #{data.repository.full_name} to #{data.deployment.environment} failed.\nDetails: #{data.deployment_status.target_url or 'AAAAA!'}"
             else
               return
           robot.messageRoom room, msg
@@ -232,11 +240,11 @@ startx
       when 'push'
         msg  = "#⃣ @#{data.pusher.name} #{if data.forced then 'FORCE PUSHED' else 'pushed'} "
         msg += "#{pluralize(data.commits.length, 'commit', 'commits')} to #{data.ref} at #{data.repository.full_name}\n\n"
-        commitMsg = (commit) -> "#{commit.id.substr(0,7)} #{commit.message}\n"
+        commitMsg = (commit) -> "#{commit.id.substr(0,7)} #{commit.message.firstLine}\n"
         switch
           when data.commits.length == 1
             fdiff = (c, attr) -> msg += "#{c} #{file}\n" for file in data.commits[0][attr]
-            msg += commitMsg(data.commits[0]) + '\n'
+            msg += "#{data.commits[0].id.substr(0,7)} #{data.commits[0].message}\n\n"
             fdiff('+', 'added')
             fdiff('M', 'modified')
             fdiff('-', 'removed')
