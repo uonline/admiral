@@ -22,6 +22,12 @@ request = require 'request'
 
 module.exports = (robot) ->
 
+  pluralize = (n, form1, form2) ->
+    if n%10 == 1 and n%100 != 11
+      return n+' '+form1
+    else
+      return n+' '+form2
+
   getCommitMessage = (repository, sha, callback) ->
     opts =
       url: repository.commits_url.replace('{/sha}', '/'+sha)
@@ -198,6 +204,8 @@ startx
       when 'issues'
         if COMPLEMENT is true
           if data.action != 'closed' then return
+        if data.action in ['labeled', 'unlabeled']
+          return
         robot.messageRoom room, "🐛 @#{data.issue.user.login} #{data.action} an issue at #{data.repository.full_name}\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
       when 'member'
         # data.action - Currently, can only be "added"
@@ -218,7 +226,25 @@ startx
       when 'pull_request_review_comment'
         robot.messageRoom room, "@#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'push'
-        robot.messageRoom room, "#⃣ push to #{data.ref} at #{data.repository.full_name}, #{data.commits.length} commit(s)\n\nCompare: #{data.compare}"
+        msg = "#⃣ @#{data.pusher.name} pushed #{pluralize(data.commits.length, 'commit', 'commits')} to #{data.ref} at #{data.repository.full_name}\n\n"
+        commitMsg = (commit) -> "#{commit.id.substr(0,7)} #{commit.message}\n"
+        switch
+          when data.commits.length == 1
+            fdiff = (c, attr) -> msg += "#{c} #{file}\n" for file in data.commits[0][attr]
+            msg += commitMsg(data.commits[0]) + '\n'
+            fdiff('+', 'added')
+            fdiff('M', 'modified')
+            fdiff('-', 'removed')
+            msg += "\n#{data.commits[0].url}"
+          when data.commits.length <= 5
+            msg += commitMsg(commit) for commit in data.commits
+            msg += "\nCompare: #{data.compare}"
+          else
+            msg += commitMsg(commit) for commit in data.commits.slice(0,3)
+            msg += "(...#{pluralize(data.commits.length-4, 'commit', 'commits')} are skipped)\n"
+            msg += commitMsg(data.commits[data.commits.length-1])
+            msg += "\nCompare: #{data.compare}"
+        robot.messageRoom room, msg
       when 'release'
         # data.action - Currently, can only be "published"
         robot.messageRoom room, "@#{data.release.author.login} published new release #{data.release.tag_name} at #{data.repository.full_name}"

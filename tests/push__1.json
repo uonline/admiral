@@ -25,14 +25,94 @@
         "username": "baxterthehacker"
       },
       "added": [
-        "Added.md"
+
       ],
       "removed": [
-        "To-remove.md"
+
       ],
       "modified": [
         "README.md"
       ]
+    },
+    {
+      "id": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "distinct": true,
+      "message": "Re-update README.md",
+      "timestamp": "2015-05-05T19:40:15-04:00",
+      "url": "https://github.com/baxterthehacker/public-repo/commit/0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "author": {
+        "name": "baxterthehacker",
+        "email": "baxterthehacker@users.noreply.github.com",
+        "username": "baxterthehacker"
+      },
+      "committer": {
+        "name": "baxterthehacker",
+        "email": "baxterthehacker@users.noreply.github.com",
+        "username": "baxterthehacker"
+      },
+      "added": [],
+      "removed": [],
+      "modified": []
+    },
+    {
+      "id": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "distinct": true,
+      "message": "When two updates are not enough",
+      "timestamp": "2015-05-05T19:40:15-04:00",
+      "url": "https://github.com/baxterthehacker/public-repo/commit/0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "author": {
+        "name": "baxterthehacker",
+        "email": "baxterthehacker@users.noreply.github.com",
+        "username": "baxterthehacker"
+      },
+      "committer": {
+        "name": "baxterthehacker",
+        "email": "baxterthehacker@users.noreply.github.com",
+        "username": "baxterthehacker"
+      },
+      "added": [],
+      "removed": [],
+      "modified": []
+    },
+    {
+      "id": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "distinct": true,
+      "message": "It's almost done",
+      "timestamp": "2015-05-05T19:40:15-04:00",
+      "url": "https://github.com/baxterthehacker/public-repo/commit/0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "author": {
+        "name": "baxterthehacker",
+        "email": "baxterthehacker@users.noreply.github.com",
+        "username": "baxterthehacker"
+      },
+      "committer": {
+        "name": "baxterthehacker",
+        "email": "baxterthehacker@users.noreply.github.com",
+        "username": "baxterthehacker"
+      },
+      "added": [],
+      "removed": [],
+      "modified": []
+    },
+    {
+      "id": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "distinct": true,
+      "message": "The last one",
+      "timestamp": "2015-05-05T19:40:15-04:00",
+      "url": "https://github.com/baxterthehacker/public-repo/commit/0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "author": {
+        "name": "baxterthehacker",
+        "email": "baxterthehacker@users.noreply.github.com",
+        "username": "baxterthehacker"
+      },
+      "committer": {
+        "name": "baxterthehacker",
+        "email": "baxterthehacker@users.noreply.github.com",
+        "username": "baxterthehacker"
+      },
+      "added": [],
+      "removed": [],
+      "modified": []
     }
   ],
   "head_commit": {

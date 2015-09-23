@@ -28,9 +28,16 @@ makeRobot = (onMessage) ->
 
 
 test = (eventName, data) ->
+	m = eventName.match(/^(.*)__(\d+)$/)
+	num = null
+	if m
+		eventName = m[1]
+		num = +m[2]
+	
 	response_text = 'not assigned'
 	robot = makeRobot (room, msg) ->
-		console.log "#{green '>>>'} #{yellow eventName} #{green Array(60-1-name.length).join '-'}"
+		eventName += " (#{num})" if num?
+		console.log "#{green '>>>'} #{yellow eventName} #{green Array(60-1-eventName.length).join '-'}"
 		console.log "#{magenta 'response:'} #{response_text}"
 		console.log "#{magenta 'room:'} #{room}"
 		console.log magenta 'message:'
