@@ -27,17 +27,10 @@ makeRobot = (onMessage) ->
 
 
 
-test = (eventName, data) ->
-	m = eventName.match(/^(.*)__(\d+)$/)
-	num = null
-	if m
-		eventName = m[1]
-		num = +m[2]
-	
+localtest = (test, data) ->
 	response_text = 'not assigned'
 	robot = makeRobot (room, msg) ->
-		eventName += " (#{num})" if num?
-		console.log "#{green '>>>'} #{yellow eventName} #{green Array(60-1-eventName.length).join '-'}"
+		console.log "#{green '>>>'} #{yellow test.name} #{green Array(60-1-test.name.length).join '-'}"
 		console.log "#{magenta 'response:'} #{response_text}"
 		console.log "#{magenta 'room:'} #{room}"
 		console.log magenta 'message:'
@@ -48,23 +41,22 @@ test = (eventName, data) ->
 	ghScript(robot)
 	
 	ghHandler(
-		{ headers: { 'x-github-event': eventName }, body: data }
+		{ headers: { 'x-github-event': test.event }, body: data }
 		{ send: (text) -> response_text = text }
 	)
 
 httptest = ->
-	t = files.pop()
-	if not t?
+	test = tests.pop()
+	if not test?
 		return
-	name = t.match(/^(.*)\.json$/)[1]
-	t = "#{__dirname}/#{t}"
-	console.log "#{green '>>>'} #{yellow name} #{green Array(60-1-name.length).join '-'}"
+	fname = "#{__dirname}/#{test.fname}"
+	console.log "#{green '>>>'} #{yellow test.name} #{green Array(60-1-test.name.length).join '-'}"
 	options =
 		method: 'POST'
 		uri: 'http://localhost:3217/hubot/github'
 		headers:
-			'x-github-event': name
-	fs.createReadStream(t).pipe request.post options, (error, response, body) ->
+			'x-github-event': test.event
+	fs.createReadStream(fname).pipe request.post options, (error, response, body) ->
 		if error?
 			console.log error
 			return
@@ -73,14 +65,17 @@ httptest = ->
 			return
 		httptest()
 
-USE_HTTP = false
+USE_HTTP = !!process.env['USE_HTTP']
 
-files = fs.readdirSync(__dirname).filter (name) -> name.match /\.json$/
+tests = fs.readdirSync(__dirname)
+	.filter (name) -> name.match /\.json$/
+	.map (name) ->
+		m = name.match /^(.*?)(?:__(\d+))?\.json$/
+		{fname:name, event:m[1], name:m[1]+(if m[2]? then " (#{m[2]})" else '')}
 if USE_HTTP
-	files = files.reverse()
+	tests = tests.reverse()
 	httptest()
 else
-	for file in files
-		data = JSON.parse(fs.readFileSync(__dirname+'/'+file))
-		name = file.match(/^(.*)\.json$/)[1]
-		test(name, data)
+	for test in tests
+		data = JSON.parse(fs.readFileSync(__dirname+'/'+test.fname))
+		localtest(test, data)

@@ -206,7 +206,11 @@ startx
           if data.action != 'closed' then return
         if data.action in ['labeled', 'unlabeled']
           return
-        robot.messageRoom room, "🐛 @#{data.issue.user.login} #{data.action} an issue at #{data.repository.full_name}\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
+        msg = "🐛 @#{data.sender.login} #{data.action} an issue at #{data.repository.full_name}"
+        msg += " to #{data.assignee.login}" if data.action=='assigned'
+        msg += " from #{data.assignee.login}" if data.action=='unassigned'
+        msg += "\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
+        robot.messageRoom room, msg
       when 'member'
         # data.action - Currently, can only be "added"
         robot.messageRoom room, "@#{data.member.login} has been added to #{data.repository.full_name}"
@@ -226,7 +230,8 @@ startx
       when 'pull_request_review_comment'
         robot.messageRoom room, "@#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'push'
-        msg = "#⃣ @#{data.pusher.name} pushed #{pluralize(data.commits.length, 'commit', 'commits')} to #{data.ref} at #{data.repository.full_name}\n\n"
+        msg  = "#⃣ @#{data.pusher.name} #{if data.forced then 'FORCE PUSHED' else 'pushed'} "
+        msg += "#{pluralize(data.commits.length, 'commit', 'commits')} to #{data.ref} at #{data.repository.full_name}\n\n"
         commitMsg = (commit) -> "#{commit.id.substr(0,7)} #{commit.message}\n"
         switch
           when data.commits.length == 1

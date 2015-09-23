@@ -10,6 +10,7 @@ class Telegram extends Adapter
     @token = process.env['TELEGRAM_TOKEN']
     @webHook = process.env['TELEGRAM_WEBHOOK']
     @api_url = "https://api.telegram.org/bot#{@token}"
+    @timeout = process.env['TELEGRAM_INTERVAL'] or 60000
     @offset = 0
 
     # Get the Bot Id and name...not used by now
@@ -84,7 +85,7 @@ class Telegram extends Adapter
           @receiveMsg msg
     else
       longPoll = ->
-        url = "#{self.api_url}/getUpdates?offset=#{self.getLastOffset()}&timeout=60"
+        url = "#{self.api_url}/getUpdates?offset=#{self.getLastOffset()}&timeout=#{@timeout/1000|0}"
         self.robot.http(url).get() (err, res, body) ->
           process.nextTick -> longPoll()
           if err
