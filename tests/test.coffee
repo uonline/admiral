@@ -1,4 +1,4 @@
-#!/usr/local/bin/coffee
+#!/usr/bin/coffee
 fs = require 'fs'
 chalk = require 'chalk'
 request = require 'request'
