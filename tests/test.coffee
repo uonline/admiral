@@ -65,17 +65,22 @@ httptest = ->
 			return
 		httptest()
 
-USE_HTTP = !!process.env['USE_HTTP']
-TEST_ONLY = process.env['TEST_ONLY']
+use_http = false
+events_to_test = []
+for arg in process.argv.slice(2)
+	if arg is '--http'
+		use_http = true
+	else
+		events_to_test.push arg
 
 tests = fs.readdirSync(__dirname)
 	.filter (name) -> name.match /\.json$/
 	.map (name) ->
 		m = name.match /^(.*?)(?:__(\d+))?\.json$/
 		{fname:name, event:m[1], name:m[1]+(if m[2]? then " (#{m[2]})" else '')}
-if TEST_ONLY?
-	tests = tests.filter (test) -> test.event == TEST_ONLY
-if USE_HTTP
+if events_to_test.length > 0
+	tests = tests.filter (test) -> test.event in events_to_test
+if use_http
 	tests = tests.reverse()
 	httptest()
 else
