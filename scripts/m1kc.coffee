@@ -47,7 +47,11 @@ module.exports = (robot) ->
         console.log("Error while requesting #{opts.url}: #{err.message}")
       else
         message = JSON.parse(body).commit.message
-      callback(message or sha.substr(0,7))
+      if message
+        message = "#{sha.substr(0,7)} \"#{message.firstLine}\""
+      else
+        message = sha.substr(0,7)
+      callback(message)
 
   robot.hear /.*/i, (msg) ->
     console.log require('chalk').blue require('util').inspect msg.message
@@ -181,16 +185,16 @@ startx
         robot.messageRoom room, "@#{data.sender.login} deleted #{data.ref_type} '#{data.ref}' at #{data.repository.full_name}"
       when 'deployment'
         getCommitMessage data.repository, data.deployment.sha, (message) ->
-          robot.messageRoom room, "🐇 @#{data.deployment.creator.login} is deploying '#{message.firstLine}' from #{data.repository.full_name} to #{data.deployment.environment}"
+          robot.messageRoom room, "🐇 @#{data.deployment.creator.login} is deploying #{message} from #{data.repository.full_name} to #{data.deployment.environment}"
       when 'deployment_status'
         # data.deployment_status.creator VS data.deployment.creator ?
         getCommitMessage data.repository, data.deployment.sha, (message) ->
           switch data.deployment_status.state
             #when 'pending'
             when 'success'
-              msg = "🐇 @#{data.deployment_status.creator.login} successfully deployed '#{message.firstLine}' from #{data.repository.full_name} to #{data.deployment.environment}"
+              msg = "🐇 @#{data.deployment_status.creator.login} successfully deployed #{message} from #{data.repository.full_name} to #{data.deployment.environment}"
             when 'failure', 'error'
-              msg = "❌ Deploying '#{message.firstLine}' from #{data.repository.full_name} to #{data.deployment.environment} failed.\nDetails: #{data.deployment_status.target_url or 'AAAAA!'}"
+              msg = "❌ Deploying #{message} from #{data.repository.full_name} to #{data.deployment.environment} failed.\nDetails: #{data.deployment_status.target_url or 'AAAAA!'}"
             else
               return
           robot.messageRoom room, msg
