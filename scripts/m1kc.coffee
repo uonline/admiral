@@ -180,7 +180,7 @@ startx
       when 'create'
         # ref - The git ref (or null if only a repository was created).
         ref = if data.ref? then "'#{data.ref}' at #{data.repository.full_name}" else "'#{data.repository.full_name}'"
-        robot.messageRoom room, "@#{data.sender.login} created #{data.ref_type} #{ref}"
+        robot.messageRoom room, "🌟 @#{data.sender.login} created #{data.ref_type} #{ref}"
       when 'delete'
         robot.messageRoom room, "@#{data.sender.login} deleted #{data.ref_type} '#{data.ref}' at #{data.repository.full_name}"
       when 'deployment'
@@ -203,7 +203,7 @@ startx
       #when 'follow'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       when 'fork'
-        robot.messageRoom room, "🐗 @#{data.sender.login} forked #{data.repository.full_name} to #{data.forkee.full_name}"
+        robot.messageRoom room, "🌳 @#{data.sender.login} forked #{data.repository.full_name} to #{data.forkee.full_name}"
       #when 'fork_apply'
       #  "Events of this type are no longer created, but it’s possible that they exist in timelines of some users."
       #when 'fork_apply'
@@ -212,7 +212,7 @@ startx
         robot.messageRoom room, "📖 @#{data.sender.login} " + data.pages.map((p) -> "#{p.action} '#{p.page_name}' wiki page (#{p.html_url})").join(", ") + " at "+data.repository.full_name
       when 'issue_comment'
         # data.action - Currently, can only be "created".
-        robot.messageRoom room, "@#{data.comment.user.login} commented on issue ##{data.issue.number} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
+        robot.messageRoom room, "💬 @#{data.comment.user.login} commented on issue ##{data.issue.number} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'issues'
         if COMPLEMENT is true
           if data.action != 'closed' then return
@@ -225,22 +225,22 @@ startx
         robot.messageRoom room, msg
       when 'member'
         # data.action - Currently, can only be "added"
-        robot.messageRoom room, "@#{data.member.login} has been added to #{data.repository.full_name}"
+        robot.messageRoom room, "👥 @#{data.member.login} has been added to #{data.repository.full_name}"
       when 'membership'
         action_at = data.action + {added:' to', removed:' from'}[data.action]
-        robot.messageRoom room, "@#{data.member.login} has been #{action_at} team #{data.team.name}"
+        robot.messageRoom room, "👥 @#{data.member.login} has been #{action_at} team #{data.team.name}"
       when 'page_build'
         # data.build.pusher VS data.sender ?
-        robot.messageRoom room, "@#{data.build.pusher.login} building page #{data.build.url} at #{data.repository.full_name}, status: #{data.build.status}\n\n#{data.repository.html_url}"
+        robot.messageRoom room, "📜 @#{data.build.pusher.login} building page #{data.build.url} at #{data.repository.full_name}, status: #{data.build.status}\n\n#{data.repository.html_url}"
       when 'public'
         # Triggered when a private repository is open sourced. Without a doubt: the best GitHub event.
-        robot.messageRoom room, "#{data.repository.full_name} has become public! Hooray!\n\n#{data.repository.html_url}"
+        robot.messageRoom room, "🎉 #{data.repository.full_name} has become public! Hooray!\n\n#{data.repository.html_url}"
       when 'pull_request'
         if data.action in ['labeled', 'unlabeled']
           return
-        robot.messageRoom room, "@#{data.pull_request.user.login} #{data.action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
+        robot.messageRoom room, "🔌 @#{data.pull_request.user.login} #{data.action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
       when 'pull_request_review_comment'
-        robot.messageRoom room, "@#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
+        robot.messageRoom room, "💬 @#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'push'
         msg  = "#⃣ @#{data.pusher.name} #{if data.forced then 'FORCE PUSHED' else 'pushed'} "
         msg += "#{pluralize(data.commits.length, 'commit', 'commits')} to #{data.ref} at #{data.repository.full_name}\n\n"
@@ -264,21 +264,21 @@ startx
         robot.messageRoom room, msg
       when 'release'
         # data.action - Currently, can only be "published"
-        robot.messageRoom room, "@#{data.release.author.login} published new release #{data.release.tag_name} at #{data.repository.full_name}"
+        robot.messageRoom room, "🚢 @#{data.release.author.login} published new release #{data.release.tag_name} at #{data.repository.full_name}"
       when 'repository'
         # data.action - Currently, can only be "created"
         # repository.owner ? sender ? ?!?!
         robot.messageRoom room, "📔 New repository #{data.repository.full_name}"
       when 'status'
         if data.state in ['failure', 'error']
-          robot.messageRoom room, "'#{data.commit.commit.message or data.sha.substr(0,7)}' at #{data.repository.full_name}: #{data.description or data.state} (#{data.context})\nDetails: #{data.target_url or 'not available'}"
+          robot.messageRoom room, "❌ '#{data.commit.commit.message or data.sha.substr(0,7)}' at #{data.repository.full_name}: #{data.description or data.state} (#{data.context})\nDetails: #{data.target_url or 'not available'}"
       when 'team_add'
-        robot.messageRoom room, "#{data.repository.full_name} has been added to '#{data.team.name}' team"
+        robot.messageRoom room, "👥 #{data.repository.full_name} has been added to '#{data.team.name}' team"
       when 'watch'
         # data.action Currently, can only be started.
-        robot.messageRoom room, "@#{data.sender.login} starred #{data.repository.full_name}"
+        robot.messageRoom room, "⭐️ @#{data.sender.login} starred #{data.repository.full_name}"
       else
-        robot.messageRoom room, "Got some unknown event from github: #{event}"
+        robot.messageRoom room, "📦 Got some unknown event from github: #{event}"
 
   # robot.hear /badger/i, (msg) ->
   #   msg.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
