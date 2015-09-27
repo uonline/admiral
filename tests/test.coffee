@@ -1,4 +1,4 @@
-#!/usr/bin/coffee
+#!/usr/bin/env coffee
 fs = require 'fs'
 chalk = require 'chalk'
 request = require 'request'
@@ -66,12 +66,15 @@ httptest = ->
 		httptest()
 
 USE_HTTP = !!process.env['USE_HTTP']
+TEST_ONLY = process.env['TEST_ONLY']
 
 tests = fs.readdirSync(__dirname)
 	.filter (name) -> name.match /\.json$/
 	.map (name) ->
 		m = name.match /^(.*?)(?:__(\d+))?\.json$/
 		{fname:name, event:m[1], name:m[1]+(if m[2]? then " (#{m[2]})" else '')}
+if TEST_ONLY?
+	tests = tests.filter (test) -> test.event == TEST_ONLY
 if USE_HTTP
 	tests = tests.reverse()
 	httptest()
