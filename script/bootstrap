@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# script/bootstrap: Resolve all dependencies that the application requires to
+#                   run.
+
+set -e
+cd "$(dirname "$0")/.."
+set -x
+
+npm install
+npm update
+rm node_modules/hubot-telegram/src/telegram.coffee
+ln telegram.coffee node_modules/hubot-telegram/src/telegram.coffee
