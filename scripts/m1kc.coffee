@@ -179,10 +179,11 @@ startx
         robot.messageRoom room, "💬 @#{data.comment.user.login} commented on #{data.comment.commit_id.substr(0,7)} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'create'
         # ref - The git ref (or null if only a repository was created).
+        icon = {repository:'📔', branch:'🌱', tag:'🐾'}[data.ref_type]
         ref = if data.ref? then "'#{data.ref}' at #{data.repository.full_name}" else "'#{data.repository.full_name}'"
-        robot.messageRoom room, "🌟 @#{data.sender.login} created #{data.ref_type} #{ref}"
+        robot.messageRoom room, "#{icon} @#{data.sender.login} created #{data.ref_type} #{ref}"
       when 'delete'
-        robot.messageRoom room, "@#{data.sender.login} deleted #{data.ref_type} '#{data.ref}' at #{data.repository.full_name}"
+        robot.messageRoom room, "💣 @#{data.sender.login} deleted #{data.ref_type} '#{data.ref}' at #{data.repository.full_name}"
       when 'deployment'
         getCommitMessage data.repository, data.deployment.sha, (message) ->
           robot.messageRoom room, "🐇 @#{data.deployment.creator.login} is deploying #{message} from #{data.repository.full_name} to #{data.deployment.environment}"
