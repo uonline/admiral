@@ -163,8 +163,6 @@ startx
     msg.reply "Spamming to room #{q}."
   
   robot.respond /tell me your pid/i, (msg) ->
-    console.log require('util').inspect msg, depth: null
-    robot.brain.set 'github-room', msg.message.room
     msg.reply process.pid
 
   robot.router.post '/hubot/github', (req, res) ->
