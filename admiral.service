@@ -1,0 +1,23 @@
+; Admiral systemd service unit file
+; Place in e.g. `/etc/systemd/system/admiral.service`, then `systemctl daemon-reload` and `systemctl start admiral`.
+
+[Unit]
+Description=admiral
+Requires=network.target
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/admiral
+;User=admiral
+
+Restart=always
+RestartSec=10
+
+; Configure environment variables, make sure to use quotes around whitespace as shown below.
+;Environment=HUBOT_aaa=xxx "HUBOT_bbb='yyy yyy'"
+
+ExecStart=/opt/admiral/script/run
+
+[Install]
+WantedBy=multi-user.target
