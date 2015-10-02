@@ -12,7 +12,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/admiral
-;User=admiral
+User=admiral
 
 Restart=always
 RestartSec=10
