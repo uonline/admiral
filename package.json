@@ -24,7 +24,6 @@
     "hubot-scripts": "^2.5.16",
     "hubot-shipit": "^0.1.1",
     "hubot-telegram": "0.0.2",
-    "hubot-xmpp": "^0.1.12",
     "hubot-youtube": "^0.1.2",
     "request": "^2.62.0",
     "sugar": "^1.4.1"

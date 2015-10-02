@@ -161,6 +161,11 @@ startx
     robot.brain.set 'github-room', msg.message.room
     q = robot.brain.get 'github-room'
     msg.reply "Spamming to room #{q}."
+  
+  robot.respond /tell me your pid/i, (msg) ->
+    console.log require('util').inspect msg, depth: null
+    robot.brain.set 'github-room', msg.message.room
+    msg.reply process.pid
 
   robot.router.post '/hubot/github', (req, res) ->
     COMPLEMENT = false
@@ -243,6 +248,8 @@ startx
       when 'pull_request_review_comment'
         robot.messageRoom room, "💬 @#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'push'
+        if data.commits.length == 0
+          return
         msg  = "#⃣ @#{data.pusher.name} #{if data.forced then 'FORCE PUSHED' else 'pushed'} "
         msg += "#{pluralize(data.commits.length, 'commit', 'commits')} to #{data.ref} at #{data.repository.full_name}\n\n"
         commitMsg = (commit) -> "#{commit.id.substr(0,7)} #{commit.message.firstLine}\n"
