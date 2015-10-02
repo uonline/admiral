@@ -1,5 +1,8 @@
 ; Admiral systemd service unit file
 ; Place in e.g. `/etc/systemd/system/admiral.service`, then `systemctl daemon-reload` and `systemctl start admiral`.
+; Drop token in: /etc/systemd/system/admiral.service.d/token.conf
+; [Service]
+; Environment=TELEGRAM_TOKEN=ddhsjdshsdjhdaskdashsadhdsajk
 
 [Unit]
 Description=admiral
