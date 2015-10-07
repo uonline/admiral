@@ -59,6 +59,14 @@ module.exports = (robot) ->
   robot.hear /tell me your name/i, (msg) ->
     msg.reply 'My name is Admiral Kunkka!'
 
+  memuse = (msg) ->
+    mb = (process.memoryUsage().rss/1024/1024).toFixed(2)
+    msg.reply "My inner Chrome is like #{mb} megabytes right now."
+  robot.respond /tell me how fat you are/i, (msg) ->
+    memuse(msg)
+  robot.respond /memory$/i, (msg) ->
+    memuse(msg)
+
   robot.respond /talk to me$/i, ( msg ) ->
     # Simply reply
     msg.reply "Hello #{msg.envelope.user.name}. Your private JID is #{msg.envelope.user.privateChatJID}"
@@ -161,7 +169,7 @@ startx
     robot.brain.set 'github-room', msg.message.room
     q = robot.brain.get 'github-room'
     msg.reply "Spamming to room #{q}."
-  
+
   robot.respond /tell me your pid/i, (msg) ->
     msg.reply process.pid
 
