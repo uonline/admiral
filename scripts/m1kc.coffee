@@ -249,7 +249,20 @@ startx
         robot.messageRoom room, "👥 @#{data.member.login} has been #{action_at} team #{data.team.name}"
       when 'page_build'
         # data.build.pusher VS data.sender ?
-        robot.messageRoom room, "📜 @#{data.build.pusher.login} building page #{data.build.url} at #{data.repository.full_name}, status: #{data.build.status}\n\n#{data.repository.html_url}"
+        # status can be one of:
+        #   null,     which means the site has yet to be built
+        #   building, which means the build is in progress
+        #   built,    which means the site has been built
+        #   errored,  which indicates an error occurred during the build
+        msg = null
+        if data.build.status == 'built'
+          getCommitMessage data.repository, data.build.commit, (message) ->
+            msg = "📜 GitHub Pages for #{data.repository.full_name} were successfully rebuilt. Last commit: #{message} by @#{data.build.pusher.login}"
+            robot.messageRoom room, msg
+        if data.build.status == 'errored'
+          getCommitMessage data.repository, data.build.commit, (message) ->
+            msg = "📜 Building GitHub Pages for #{data.repository.full_name} failed with error: #{data.build.error.message}. Last commit: #{message} by @#{data.build.pusher.login}"
+            robot.messageRoom room, msg
       when 'public'
         # Triggered when a private repository is open sourced. Without a doubt: the best GitHub event.
         robot.messageRoom room, "🎉 #{data.repository.full_name} has become public! Hooray!\n\n#{data.repository.html_url}"
