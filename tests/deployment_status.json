@@ -57,7 +57,7 @@
       "site_admin": false
     },
     "description": null,
-    "target_url": null,
+    "target_url": "http://the.target.url",
     "created_at": "2015-05-05T23:40:39Z",
     "updated_at": "2015-05-05T23:40:39Z",
     "deployment_url": "https://api.github.com/repos/baxterthehacker/public-repo/deployments/710692",
