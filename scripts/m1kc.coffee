@@ -236,7 +236,9 @@ startx
         msg = "🐛 @#{data.sender.login} #{data.action} an issue at #{data.repository.full_name}"
         msg += " to @#{data.assignee.login}" if data.action=='assigned'
         msg += " from @#{data.assignee.login}" if data.action=='unassigned'
-        msg += "\n\n`#{data.issue.title}`\n\n#{data.issue.html_url}"
+        msg += "\n\n`#{data.issue.title}`\n\n"
+        msg += "#{data.issue.body}\n\n" if data.action=='opened'
+        msg += "#{data.issue.html_url}"
         robot.messageRoom room, msg
       when 'member'
         # data.action - Currently, can only be "added"
