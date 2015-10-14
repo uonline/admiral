@@ -256,7 +256,9 @@ startx
       when 'pull_request'
         if data.action in ['labeled', 'unlabeled']
           return
-        robot.messageRoom room, "🔌 @#{data.pull_request.user.login} #{data.action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
+        action = data.action
+        action += " and MERGED" if data.pull_request.merged
+        robot.messageRoom room, "🔌 @#{data.pull_request.user.login} #{action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
       when 'pull_request_review_comment'
         robot.messageRoom room, "💬 @#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'push'
