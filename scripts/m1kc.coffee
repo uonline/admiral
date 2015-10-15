@@ -208,7 +208,7 @@ startx
             #when 'pending'
             when 'success'
               msg = "🐇 @#{data.deployment_status.creator.login} successfully deployed #{message} from #{data.repository.full_name} to #{data.deployment.environment}"
-              msg += ", check it at #{data.deployment_status.target_url}" if data.deployment_status.target_url
+              msg += ", check it out: #{data.deployment_status.target_url}" if data.deployment_status.target_url
             when 'failure', 'error'
               msg = "❌ Deploying #{message} from #{data.repository.full_name} to #{data.deployment.environment} failed.\nDetails: #{data.deployment_status.target_url or 'AAAAA!'}"
             else
