@@ -271,12 +271,12 @@ startx
         if COMPLEMENT is true then return
         if data.action in ['labeled', 'unlabeled']
           return
-        action = data.action
         if data.pull_request.merged
-          msg = "🔌 @#{data.pull_request.user.login} merged a pull request"
-          msg += " (and #{data.action} it)" if data.action != "closed"
+          msg = "🔌 @#{data.pull_request.merged_by.login} merged"
+          msg += " (and #{data.action})" if data.action != "closed"
         else
-          msg = "🔌 @#{data.pull_request.user.login} #{data.action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
+          msg = "🔌 @#{data.sender.login} #{data.action}"
+        msg += " a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
         robot.messageRoom room, msg
       when 'pull_request_review_comment'
         if COMPLEMENT is true then return
