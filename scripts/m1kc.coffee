@@ -178,7 +178,7 @@ startx
     msg.reply process.pid
 
   robot.router.post '/hubot/github', (req, res) ->
-    COMPLEMENT = true
+    COMPLEMENT = false
     # dump
     #console.log require('chalk').green require('util').inspect req.body, depth: null
     #console.log require('chalk').green require('util').inspect req.headers, depth: null
@@ -278,7 +278,9 @@ startx
           msg += " (and #{data.action})" if data.action != "closed"
         else
           msg = "🔌 @#{data.sender.login} #{data.action}"
-        msg += " a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
+        msg += " a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n"
+        msg += "#{data.pull_request.body}\n\n" if data.action=='opened'
+        msg += "#{data.pull_request.html_url}"
         robot.messageRoom room, msg
       when 'pull_request_review_comment'
         if COMPLEMENT is true then return
