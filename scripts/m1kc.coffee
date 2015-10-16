@@ -177,7 +177,7 @@ startx
     msg.reply process.pid
 
   robot.router.post '/hubot/github', (req, res) ->
-    COMPLEMENT = false
+    COMPLEMENT = true
     # dump
     #console.log require('chalk').green require('util').inspect req.body, depth: null
     #console.log require('chalk').green require('util').inspect req.headers, depth: null
@@ -227,11 +227,11 @@ startx
       when 'gollum'
         robot.messageRoom room, "📖 @#{data.sender.login} " + data.pages.map((p) -> "#{p.action} '#{p.page_name}' wiki page (#{p.html_url})").join(", ") + " at "+data.repository.full_name
       when 'issue_comment'
+        if COMPLEMENT is true then return
         # data.action - Currently, can only be "created".
         robot.messageRoom room, "💬 @#{data.comment.user.login} commented on issue ##{data.issue.number} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'issues'
-        if COMPLEMENT is true
-          if data.action != 'closed' then return
+        if COMPLEMENT is true then return
         if data.action in ['labeled', 'unlabeled']
           return
         msg = "🐛 @#{data.sender.login} #{data.action} an issue at #{data.repository.full_name}"
@@ -267,6 +267,7 @@ startx
         # Triggered when a private repository is open sourced. Without a doubt: the best GitHub event.
         robot.messageRoom room, "🎉 #{data.repository.full_name} has become public! Hooray!\n\n#{data.repository.html_url}"
       when 'pull_request'
+        if COMPLEMENT is true then return
         if data.action in ['labeled', 'unlabeled']
           return
         action = data.action
@@ -277,6 +278,7 @@ startx
           msg = "🔌 @#{data.pull_request.user.login} #{data.action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
         robot.messageRoom room, msg
       when 'pull_request_review_comment'
+        if COMPLEMENT is true then return
         robot.messageRoom room, "💬 @#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'push'
         if data.commits.length == 0
