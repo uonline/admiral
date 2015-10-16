@@ -270,8 +270,12 @@ startx
         if data.action in ['labeled', 'unlabeled']
           return
         action = data.action
-        action += " and MERGED" if data.pull_request.merged
-        robot.messageRoom room, "🔌 @#{data.pull_request.user.login} #{action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
+        if data.pull_request.merged
+          msg = "🔌 @#{data.pull_request.user.login} merged a pull request"
+          msg += " (and #{data.action} it)" if data.action != "closed"
+        else
+          msg = "🔌 @#{data.pull_request.user.login} #{data.action} a pull request at #{data.repository.full_name}\n\n`#{data.pull_request.title}`\n\n#{data.pull_request.html_url}"
+        robot.messageRoom room, msg
       when 'pull_request_review_comment'
         robot.messageRoom room, "💬 @#{data.comment.user.login} commented on pull request ##{data.pull_request.number} at #{data.repository.full_name}:\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'push'
