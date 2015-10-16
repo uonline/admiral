@@ -166,9 +166,10 @@ startx
 
   robot.respond /spam to this room/i, (msg) ->
     console.log require('util').inspect msg, depth: null
+    prevRoom = robot.brain.get 'github-room'
     robot.brain.set 'github-room', msg.message.room
-    q = robot.brain.get 'github-room'
-    msg.reply "Spamming to room #{q}."
+    brainRoom = robot.brain.get 'github-room'
+    msg.reply "Spamming to room #{brainRoom} (previous was #{prevRoom})."
   
   robot.respond /tell me your pid/i, (msg) ->
     msg.reply process.pid
