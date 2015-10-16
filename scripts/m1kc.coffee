@@ -178,7 +178,7 @@ startx
     msg.reply process.pid
 
   robot.router.post '/hubot/github', (req, res) ->
-    COMPLEMENT = false
+    COMPLEMENT = process.env['ADMIRAL_COMPLEMENT'] == 'true'
     # dump
     #console.log require('chalk').green require('util').inspect req.body, depth: null
     #console.log require('chalk').green require('util').inspect req.headers, depth: null
