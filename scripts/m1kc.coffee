@@ -232,7 +232,8 @@ startx
         # data.action - Currently, can only be "created".
         robot.messageRoom room, "💬 @#{data.comment.user.login} commented on issue ##{data.issue.number} at #{data.repository.full_name}\n\n#{data.comment.body}\n\n#{data.comment.html_url}"
       when 'issues'
-        if COMPLEMENT is true then return
+        if COMPLEMENT is true
+          if data.action == 'opened' then return
         if data.action in ['labeled', 'unlabeled']
           return
         msg = "🐛 @#{data.sender.login} #{data.action} an issue at #{data.repository.full_name}"
@@ -268,7 +269,8 @@ startx
         # Triggered when a private repository is open sourced. Without a doubt: the best GitHub event.
         robot.messageRoom room, "🎉 #{data.repository.full_name} has become public! Hooray!\n\n#{data.repository.html_url}"
       when 'pull_request'
-        if COMPLEMENT is true then return
+        if COMPLEMENT is true
+          if data.action == 'opened' then return
         if data.action in ['labeled', 'unlabeled']
           return
         if data.pull_request.merged
