@@ -8,5 +8,5 @@ cd "$(dirname "$0")/.."
 set -x
 
 TELEGRAM_INTERVAL=60000 \
-PORT=3217 \
+PORT=3222 \
 bin/hubot -a telegram -n admiral
