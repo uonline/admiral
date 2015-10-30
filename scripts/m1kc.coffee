@@ -170,9 +170,6 @@ startx
     robot.brain.set 'github-room', msg.message.room
     brainRoom = robot.brain.get 'github-room'
     msg.reply "Spamming to room #{brainRoom} (previous was #{prevRoom})."
-  
-  robot.respond /tell me your pid/i, (msg) ->
-    msg.reply process.pid
 
   robot.respond /tell me your pid/i, (msg) ->
     msg.reply process.pid

@@ -1,18 +1,13 @@
-# This is an example PKGBUILD file. Use this as a start to creating your own,
-# and remove these comments. For more information, see 'man PKGBUILD'.
-# NOTE: Please fill out the license field for your package! If it is unknown,
-# then please put 'unknown'.
-
 # Maintainer: m1kc <m1kc@yandex.ru>
 pkgname=admiral
 pkgver=1.1.0
 pkgrel=1
 pkgdesc="Serious captain for serious people."
-arch=('i686' 'x86_64')
+arch=('any')
 url="https://github.com/uonline/admiral"
 license=('GPL')
 groups=()
-depends=()
+depends=('nodejs' 'coffee-script')
 makedepends=()
 checkdepends=()
 optdepends=()
@@ -53,6 +48,7 @@ package() {
 	cd "$pkgname"
 	mkdir -p "${pkgdir}/opt"
 	cp -r "${srcdir}/${pkgname}" "${pkgdir}/opt/${pkgname}"
+	rm -rf "${pkgdir}/opt/${pkgname}/.git"
 	mkdir -p "${pkgdir}/etc/systemd/system"
 	cp "${srcdir}/${pkgname}/${pkgname}.service" "${pkgdir}/etc/systemd/system/${pkgname}.service"
 }
