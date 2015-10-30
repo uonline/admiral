@@ -5,7 +5,7 @@
 
 # Maintainer: m1kc <m1kc@yandex.ru>
 pkgname=admiral
-pkgver=1.1
+pkgver=1.1.0
 pkgrel=1
 pkgdesc="Serious captain for serious people."
 arch=('i686' 'x86_64')
@@ -27,6 +27,11 @@ source=('admiral::git+git://github.com/uonline/admiral.git#branch=master')
 noextract=()
 md5sums=('SKIP')
 validpgpkeys=()
+
+pkgver() {
+	cd "$pkgname"
+	cat package.json | grep version | cut -d'"' -f4
+}
 
 prepare() {
 	cd "$pkgname"
