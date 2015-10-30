@@ -53,7 +53,7 @@ httptest = ->
 	console.log "#{green '>>>'} #{yellow test.name} #{green Array(60-1-test.name.length).join '-'}"
 	options =
 		method: 'POST'
-		uri: 'http://localhost:3217/hubot/github'
+		uri: 'http://localhost:3222/hubot/github'
 		headers:
 			'x-github-event': test.event
 	fs.createReadStream(fname).pipe request.post options, (error, response, body) ->

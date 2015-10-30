@@ -256,7 +256,13 @@ startx
         msg = null
         if data.build.status == 'built'
           getCommitMessage data.repository, data.build.commit, (message) ->
-            msg = "📜 GitHub Pages for #{data.repository.full_name} were successfully rebuilt. Last commit: #{message} by @#{data.build.pusher.login}"
+            owner = data.repository.owner.login
+            name = data.repository.name
+            url = switch
+              when name is "#{owner}.github.com" then "https://#{owner}.github.io/"
+              when name is "#{owner}.github.io" then "https://#{owner}.github.io/"
+              else "https://#{owner}.github.io/#{name}/"
+            msg = "📜 GitHub Pages for #{data.repository.full_name} were successfully rebuilt. Last commit: #{message} by @#{data.build.pusher.login}.\nCheck it out: #{url}"
             robot.messageRoom room, msg
         if data.build.status == 'errored'
           getCommitMessage data.repository, data.build.commit, (message) ->
