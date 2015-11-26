@@ -84,7 +84,7 @@ class Telegram extends Adapter
           @robot.logger.info "WebHook"
           @receiveMsg msg
     else
-      longPoll = ->
+      longPoll = =>
         url = "#{self.api_url}/getUpdates?offset=#{self.getLastOffset()}&timeout=#{@timeout/1000|0}"
         self.robot.http(url).get() (err, res, body) ->
           process.nextTick -> longPoll()
