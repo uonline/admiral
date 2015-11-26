@@ -10,7 +10,7 @@ class Telegram extends Adapter
     @token = process.env['TELEGRAM_TOKEN']
     @webHook = process.env['TELEGRAM_WEBHOOK']
     @api_url = "https://api.telegram.org/bot#{@token}"
-    @timeout = process.env['TELEGRAM_INTERVAL'] or 60000
+    @timeout = +process.env['TELEGRAM_INTERVAL'] or 60000
     @offset = 0
 
     # Get the Bot Id and name...not used by now
