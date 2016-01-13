@@ -10,7 +10,7 @@ class Telegram extends Adapter
     @token = process.env['TELEGRAM_TOKEN']
     @webHook = process.env['TELEGRAM_WEBHOOK']
     @api_url = "https://api.telegram.org/bot#{@token}"
-    @timeout = +process.env['TELEGRAM_INTERVAL'] or 60000
+    @interval = +process.env['TELEGRAM_INTERVAL'] or 3000
     @offset = 0
 
     # Get the Bot Id and name...not used by now
@@ -84,26 +84,21 @@ class Telegram extends Adapter
           @robot.logger.info "WebHook"
           @receiveMsg msg
     else
-      longPoll = =>
-        url = "#{self.api_url}/getUpdates?offset=#{self.getLastOffset()}&timeout=#{@timeout/1000|0}"
+      setInterval ->
+        url = "#{self.api_url}/getUpdates?offset=#{self.getLastOffset()}"
         self.robot.http(url).get() (err, res, body) ->
-          process.nextTick -> longPoll()
-          if err
-            it_is_timeout = err.description is 'Error: Conflict: terminated by other long poll or webhook'
-            unless it_is_timeout
-              self.emit 'error', new Error err
-          else
-            try
-              updates = JSON.parse body
-            catch ex
-              console.log("#{ex.message}\nWhile parsing:\n#{body}")
-              return
-            unless updates.ok
-              console.log("#{updates.description} (#{updates.error_code})")
-              return
-            for msg in updates.result
-              self.receiveMsg msg
-      longPoll()
+          self.emit 'error', new Error err if err
+          try
+            updates = JSON.parse body
+          catch ex
+            console.log("#{ex.message}\nWhile parsing:\n#{body}")
+            return
+          unless updates.ok
+            console.log("#{updates.description} (#{updates.error_code})")
+            return
+          for msg in updates.result
+            self.receiveMsg msg
+      , @interval
 
     @emit "connected"
 
