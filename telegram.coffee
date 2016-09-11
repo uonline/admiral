@@ -41,9 +41,7 @@ class Telegram extends Adapter
       @robot.logger.info res.statusCode
 
   receiveMsg: (msg) ->
-
-    user = @robot.brain.userForId msg.message.from.id, name: msg.message.from.username, room: msg.message.chat.id
-    text = msg.message.text
+    text = msg.message?.text
 
     # Only if it's a text message, not join or leaving events
     if text
@@ -53,6 +51,7 @@ class Telegram extends Adapter
       ## If is a direct message to the bot, prepend the name
       ##text = @robot.name + ' ' + msg.message.text if msg.message.chat.id > 0
       text = @robot.name + ' ' + text
+      user = @robot.brain.userForId msg.message.from.id, name: msg.message.from.username, room: msg.message.chat.id
       message = new TextMessage user, text, msg.message_id
       @receive message
       @offset = msg.update_id
